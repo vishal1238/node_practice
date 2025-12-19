@@ -22,4 +22,9 @@ app.get("/dashboard", (req, res)=>{
     res.send(`Welcome to dashboard ${req.session.username}`)
 })
 
-//
+//logout
+app.get("/logout",(req, res)=>{
+    req.session.destroy(() => {
+        res.send("user is logged out")
+    })
+})
