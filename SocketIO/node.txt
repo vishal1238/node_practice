@@ -1,0 +1,39 @@
+const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
+
+const app = express();
+const server = http.createServer(app);
+
+// Create Socket.IO server
+const io = new Server(server, {
+  cors: {
+    origin: "*", // allow all clients (for demo)
+  },
+});
+
+// Socket connection
+io.on("connection", (socket) => {
+  console.log(`✅ User connected: ${socket.id}`);
+
+  // Handle disconnect
+  socket.on("disconnect", (reason) => {
+    console.log(`❌ User disconnected: ${socket.id}, Reason: ${reason}`);
+  });
+
+  // Handle errors
+  socket.on("error", (error) => {
+    console.error(`⚠️ Socket error from ${socket.id}:`, error);
+  });
+});
+
+// Global error handling
+io.engine.on("connection_error", (err) => {
+  console.error("🚨 Connection error:", err.message);
+});
+
+// Start server
+const PORT = 3000;
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
